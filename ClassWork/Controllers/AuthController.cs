@@ -1,5 +1,4 @@
-﻿using ClassWork.Entities;
-using ClassWork.Models;
+﻿using ClassWork.Models;
 using ClassWork.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,24 +9,26 @@ namespace ClassWork.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly ITokenService _tokenService;
-        public AuthController(ITokenService tokenService)
+        private readonly IAuthService _authService;
+
+        public AuthController(IAuthService authService)
         {
-            _tokenService = tokenService;
+            _authService = authService;
         }
+
+
         [HttpPost("login")]
-        public IActionResult Login([FromBody] User user)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            if (user.Name == "123" && user.Password == "123")
-            {
-                var refreshToken = _tokenService.GenerateRefreshToken();
+            var result = await _authService.Login(request);
+            return Ok(result);
+        }
 
-                var accessToken = _tokenService.GenerateAccessToken(user);
-
-                return Ok(new AuthResponse(accessToken, refreshToken));
-            }
-
-            return Unauthorized("Invalid");
+        [HttpPost("registration")]
+        public async Task<IActionResult> Registration([FromBody] RegisterRequest request)
+        {
+            var result = await _authService.Registration(request);
+            return Ok(result);
         }
 
         [HttpGet("get-some")]

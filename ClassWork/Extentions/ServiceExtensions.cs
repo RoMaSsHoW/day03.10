@@ -1,6 +1,9 @@
-﻿using ClassWork.Models;
+﻿using ClassWork.Abstractions;
+using ClassWork.Data;
+using ClassWork.Models;
 using ClassWork.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -15,8 +18,20 @@ namespace ClassWork.Extentions
             ConfigureJwtAuthenticationAndAuthorization(services, configuration);
 
             services.AddTransient<ITokenService, TokenService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserService, UserService>();
+
+            ConfigureDatabase(services, configuration);
 
             return services;
+        }
+
+        private static void ConfigureDatabase(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<IAppDbContext, AppDbContext>(options =>
+            {
+                options.UseNpgsql(configuration.GetConnectionString("PostgresqlDbConnection"));
+            });
         }
 
         private static void ConfigureJwtAuthenticationAndAuthorization(IServiceCollection services, IConfiguration configuration)

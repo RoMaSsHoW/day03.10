@@ -1,4 +1,5 @@
 using AspNetCore.Swagger.Themes;
+using ClassWork.Abstractions;
 using ClassWork.Extentions;
 using ClassWork.Middlewares;
 using Microsoft.OpenApi.Models;
@@ -40,6 +41,12 @@ builder.Services.AddTransient<AuthorizationFixMiddleware>();
 builder.Services.AddTransient<ErrorHandlingMiddleware>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<IAppDbContext>();
+    await dbContext.MigrateAsync();
+}
 
 if (app.Environment.IsDevelopment())
 {
