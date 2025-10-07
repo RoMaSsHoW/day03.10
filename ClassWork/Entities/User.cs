@@ -18,11 +18,11 @@ namespace ClassWork.Entities
             RefreshToken = refreshToken;
         }
 
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public Email Email { get; set; }
-        public Password Password { get; set; }
-        public string RefreshToken { get; set; } = string.Empty;
+        public int Id { get; private set; }
+        public string Name { get; private set; } = string.Empty;
+        public Email Email { get; private set; }
+        public Password Password { get; private set; }
+        public string RefreshToken { get; private set; } = string.Empty;
 
 
         public static User Registr(

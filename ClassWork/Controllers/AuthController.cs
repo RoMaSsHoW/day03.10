@@ -20,15 +20,29 @@ namespace ClassWork.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var result = await _authService.Login(request);
-            return Ok(result);
+            try
+            {
+                var result = await _authService.Login(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         [HttpPost("registration")]
         public async Task<IActionResult> Registration([FromBody] RegisterRequest request)
         {
-            var result = await _authService.Registration(request);
-            return Ok(result);
+            try
+            {
+                var result = await _authService.Registration(request);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         [HttpGet("get-some")]

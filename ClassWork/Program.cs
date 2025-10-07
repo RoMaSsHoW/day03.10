@@ -54,9 +54,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(Style.Dark);
 }
 
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
 app.UseHttpsRedirection();
 
-app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseMiddleware<AuthorizationFixMiddleware>();
 
 app.UseAuthentication();

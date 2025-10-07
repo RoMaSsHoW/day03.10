@@ -1,4 +1,7 @@
 ﻿
+using System.Net;
+using System.Text.Json;
+
 namespace ClassWork.Middlewares
 {
     public class ErrorHandlingMiddleware : IMiddleware
@@ -20,8 +23,20 @@ namespace ClassWork.Middlewares
             {
                 _logger.LogError(ex, "Ошибка при обработке запроса");
 
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                await context.Response.WriteAsync($"Ошибка сервера: {ex.Message}");
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.ContentType = "application/json";
+
+                var errorResponse = new
+                {
+                    errors = new
+                    {
+                        message = ex.Message
+                    }
+                };
+
+                var json = JsonSerializer.Serialize(errorResponse);
+
+                await context.Response.WriteAsync(json);
             }
         }
     }
